@@ -167,7 +167,7 @@ def PSLDH_Algo(code_length):
             logit = hash_out.mm(label_code.t())
 
             our_logit = torch.exp((logit - sigma * code_length) * gamma) * train_label
-            mu_logit = torch.exp(logit * (1 - train_label) * gamma).sum(1).view(-1, 1).expand(the_batch, train_label.size()[1]) + our_logit
+            mu_logit = (torch.exp(logit * gamma) * (1 - train_label)).sum(1).view(-1, 1).expand(the_batch, train_label.size()[1]) + our_logit
             loss = - ((torch.log(our_logit / mu_logit + 1 - train_label)).sum(1) / train_label.sum(1)).sum()
 
             Bbatch = torch.sign(hash_out)
